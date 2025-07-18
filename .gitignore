@@ -1,0 +1,40 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Build output
+/build
+/bin
+/dist
+
+# Dependency directories (go modules)
+/vendor/
+
+# Go coverage files
+*.coverprofile
+*.cov
+*.testprofile
+*.profile
+
+# Logs
+*.log
+
+# IDE - GoLand (JetBrains)
+.idea/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.*
+
+# Module cache
+/go.sum
