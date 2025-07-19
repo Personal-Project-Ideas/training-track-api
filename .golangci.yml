@@ -1,0 +1,16 @@
+run:
+  timeout: 2m
+  tests: true
+
+linters:
+  enable:
+    - govet
+    - errcheck
+    - staticcheck
+    - unused
+    - gosimple
+    - typecheck
+    - deadcode
+
+issues:
+  exclude-use-default: false
