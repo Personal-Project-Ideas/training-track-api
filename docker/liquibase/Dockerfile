@@ -1,0 +1,1 @@
+FROM liquibase/liquibase:latest

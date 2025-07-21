@@ -34,7 +34,8 @@ Thumbs.db
 
 # Env files
 .env
-.env.*
+
 
 # Module cache
 /go.sum
+

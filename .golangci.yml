@@ -10,7 +10,9 @@ linters:
     - unused
     - gosimple
     - typecheck
-    - deadcode
+    - revive
+    - gofmt
+    - goimports
 
 issues:
   exclude-use-default: false
