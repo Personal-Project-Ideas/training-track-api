@@ -38,3 +38,32 @@ The initial version delivers a simple yet robust API to register users and their
 | **Containerization** | Docker                     |
 
 ---
+## 🛠 Development Setup
+
+### Prerequisites
+
+🛠 Git Hooks setup using pre-commit
+  
+  1. Install pre-commit:  
+  If you don’t have pre-commit installed yet, you can install it via brew (macOS) or pip (Python):
+  
+  ```bash
+    brew install pre-commit
+  ```
+  or
+  ```bash
+    pip install pre-commit
+  ```
+
+  2. Install the hooks with:
+
+  ```bash
+    pre-commit install
+    pre-commit install --hook-type commit-msg
+  ``` 
+
+This will configure the hooks to run automatically before each commit.
+
+
+
+

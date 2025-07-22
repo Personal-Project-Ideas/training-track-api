@@ -1,5 +1,5 @@
 ---
-name: Improvement 
+name: Improvement
 about: Suggest an improvement
 title: "[Improvement] "
 labels: enhancement
