@@ -6,3 +6,10 @@ repos:
         entry: golangci-lint run
         language: system
         types: [go]
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.2.0
+    hooks:
+      - id: conventional-pre-commit
+        name: conventional commit messages
+        stages: [commit-msg]
+        args: []
