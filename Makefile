@@ -1,44 +1,86 @@
-# Load environment variables from .env
-include .env
-export
+NOW := $(shell date '+%Y%m%d%H%M%S')
 
-# Define variables
-LIQUIBASE=liquibase
-CHANGELOG_FILE=migrations/changelog.yml
-MIGRATION_DIR=migrations
+# Configurable variables (can be set in environment or .env)
+DATABASE_HOST ?= localhost
+DATABASE_PORT ?= 5432
+DATABASE_NAME ?= trainlog
+DATABASE_USER ?= admin
+DATABASE_PASSWD ?= admin123
 
-# Run API build
-build:
-	@echo "Building the Go API..."
-	go build -o bin/app ./...
+LIQUIBASE_IMAGE := liquibase/liquibase
 
-# Generate a new SQL migration
-# Usage: make generate name=your_migration_name
-generate:
-	@echo "Generating SQL migration: $(name)"
-	$(LIQUIBASE) \
-		--changeLogFile=$(CHANGELOG_FILE) \
-		generateChangeLog \
-		--outputFile=$(MIGRATION_DIR)/$(shell date +"%Y%m%d%H%M%S")_$(name).sql
+# Paths for migrations and changelog in the project root
+MIGRATIONS_DIR := ./migrations/sql
+CHANGELOG_FILE := ./migrations/changelog.yml
 
-# Run migrations using Liquibase
-migrate:
-	@echo "Running Liquibase migrations..."
-	$(LIQUIBASE) \
-		--changeLogFile=$(CHANGELOG_FILE) \
-		update
+# ------------------------
+# Liquibase Commands via Docker
+# ------------------------
 
-# Run docker-compose
-up:
-	docker-compose --env-file .env up -d
+liquibase-diff:
+	docker run --rm $(LIQUIBASE_IMAGE) \
+		diff-changelog \
+		--url="jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)" \
+		--username=$(DATABASE_USER) \
+		--password=$(DATABASE_PASSWD) \
+		--referenceUrl="jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)" \
+		--referenceUsername=$(DATABASE_USER) \
+		--referencePassword=$(DATABASE_PASSWD)
 
-# Stop containers
-down:
-	docker-compose down
+liquibase-migrate:
+	docker run --rm -v $(PWD)/migrations:/liquibase $(LIQUIBASE_IMAGE) \
+		update \
+		--url="jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)" \
+		--username=$(DATABASE_USER) \
+		--password=$(DATABASE_PASSWD) \
+		--changeLogFile=/liquibase/changelog.yml
 
-# Recreate database and run all migrations
-reset:
-	docker-compose down -v
-	docker-compose --env-file .env up -d
-	sleep 5
-	make migrate
+liquibase-rollback:
+	docker run --rm -v $(PWD)/migrations:/liquibase $(LIQUIBASE_IMAGE) \
+		rollback-count 1 \
+		--url="jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)" \
+		--username=$(DATABASE_USER) \
+		--password=$(DATABASE_PASSWD) \
+		--changeLogFile=/liquibase/changelog.yml
+
+liquibase-update-sql:
+	docker run --rm -v $(PWD)/migrations:/liquibase $(LIQUIBASE_IMAGE) \
+		updateSQL \
+		--url="jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)" \
+		--username=$(DATABASE_USER) \
+		--password=$(DATABASE_PASSWD) \
+		--changeLogFile=/liquibase/changelog.yml \
+		--outputFile=/liquibase/script.sql
+
+liquibase-create-file:
+	@touch ./migrations/sql/$(NOW)_$(name).sql
+
+# ------------------------
+# API Build and Run Commands
+# ------------------------
+
+api-build-local:
+	docker build -f docker/local/api/Dockerfile -t local-api ./api
+
+# Run API container locally, passing DB env vars via -e
+api-run-local:
+	docker run --rm \
+		-e DATABASE_HOST=$(DATABASE_HOST) \
+		-e DATABASE_PORT=$(DATABASE_PORT) \
+		-e DATABASE_NAME=$(DATABASE_NAME) \
+		-e DATABASE_USER=$(DATABASE_USER) \
+		-e DATABASE_PASSWD=$(DATABASE_PASSWD) \
+		-p 8080:8080 \
+		--network trainlog-net \
+		local-api
+
+
+# Run API directly in Go (dev mode)
+api-dev:
+	go run ./api/local
+
+api-build-prod:
+	docker build -f docker/Dockerfile -t prod-api .
+
+api-run-prod:
+	docker run --rm -p 8080:8080 prod-api
