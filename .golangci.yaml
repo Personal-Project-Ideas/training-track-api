@@ -1,0 +1,22 @@
+version: 2
+
+run:
+  timeout: 2m
+  tests: true
+
+format:
+  enable:
+    - gofmt
+    - goimports
+
+linters:
+  enable:
+    - revive
+    - ineffassign
+    - nakedret
+
+analyzers:
+  enable:
+    - gosimple
+  disable:
+    - typecheck
