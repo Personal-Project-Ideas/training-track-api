@@ -3,66 +3,19 @@ NOW := $(shell date '+%Y%m%d%H%M%S')
 # Configurable variables (can be set in environment or .env)
 DATABASE_HOST ?= localhost
 DATABASE_PORT ?= 5432
-DATABASE_NAME ?= trainlog
+DATABASE_NAME ?= trainingLog
 DATABASE_USER ?= admin
-DATABASE_PASSWD ?= admin123
-
-LIQUIBASE_IMAGE := liquibase/liquibase
-
-# Paths for migrations and changelog in the project root
-MIGRATIONS_DIR := ./migrations/sql
-CHANGELOG_FILE := ./migrations/changelog.yml
-
-# ------------------------
-# Liquibase Commands via Docker
-# ------------------------
-
-liquibase-diff:
-	docker run --rm $(LIQUIBASE_IMAGE) \
-		diff-changelog \
-		--url="jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)" \
-		--username=$(DATABASE_USER) \
-		--password=$(DATABASE_PASSWD) \
-		--referenceUrl="jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)" \
-		--referenceUsername=$(DATABASE_USER) \
-		--referencePassword=$(DATABASE_PASSWD)
-
-liquibase-migrate:
-	docker run --rm -v $(PWD)/migrations:/liquibase $(LIQUIBASE_IMAGE) \
-		update \
-		--url="jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)" \
-		--username=$(DATABASE_USER) \
-		--password=$(DATABASE_PASSWD) \
-		--changeLogFile=/liquibase/changelog.yml
-
-liquibase-rollback:
-	docker run --rm -v $(PWD)/migrations:/liquibase $(LIQUIBASE_IMAGE) \
-		rollback-count 1 \
-		--url="jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)" \
-		--username=$(DATABASE_USER) \
-		--password=$(DATABASE_PASSWD) \
-		--changeLogFile=/liquibase/changelog.yml
-
-liquibase-update-sql:
-	docker run --rm -v $(PWD)/migrations:/liquibase $(LIQUIBASE_IMAGE) \
-		updateSQL \
-		--url="jdbc:postgresql://$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)" \
-		--username=$(DATABASE_USER) \
-		--password=$(DATABASE_PASSWD) \
-		--changeLogFile=/liquibase/changelog.yml \
-		--outputFile=/liquibase/script.sql
-
-liquibase-create-file:
-	@touch ./migrations/sql/$(NOW)_$(name).sql
+DATABASE_PASSWD ?= s9X@7vP2wQz!F4mL
 
 # ------------------------
 # API Build and Run Commands
 # ------------------------
 
+# Build the API image for local development
 api-build-local:
 	docker build -f docker/local/api/Dockerfile -t local-api ./api
 
-# Run API container locally, passing DB env vars via -e
+# Run the API container locally with DB env vars
 api-run-local:
 	docker run --rm \
 		-e DATABASE_HOST=$(DATABASE_HOST) \
@@ -74,13 +27,14 @@ api-run-local:
 		--network trainlog-net \
 		local-api
 
-
-# Run API directly in Go (dev mode)
+# Run the API locally using Go (development mode)
 api-dev:
 	go run ./api/local
 
+# Build the production-ready API image
 api-build-prod:
 	docker build -f docker/Dockerfile -t prod-api .
 
+# Run the production API container
 api-run-prod:
 	docker run --rm -p 8080:8080 prod-api

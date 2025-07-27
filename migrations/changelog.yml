@@ -1,9 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: v1.0.0
-      author: Prates
-      tagDatabase:
-        tag: v1.0.0
-  - include:
-    - file: sql/
-  - include:
