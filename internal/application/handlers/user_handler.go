@@ -9,11 +9,11 @@ import (
 type userHandler struct{}
 
 func (u userHandler) Create(c *fiber.Ctx) error {
-	return c.Status(501).SendString("Not Implemented")
+	return c.Status(501).SendString("Not Implemented.")
 }
 
 func (u userHandler) GetByID(c *fiber.Ctx) error {
-	return c.Status(501).SendString("Not Implemented")
+	return c.Status(501).SendString("Not Implemented.")
 }
 
 // NewUserHandler creates a new instance of the user handler.
