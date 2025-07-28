@@ -1,7 +1,5 @@
 package dtos
 
-import "time"
-
 // UserInputDTO represents the input data transfer object for creating or updating a user.
 type UserInputDTO struct {
 	FullName string `json:"full_name" validate:"required,min=2,max=255"`
@@ -20,10 +18,10 @@ type UserUpdateInputDTO struct {
 
 // UserOutputDTO represents the output data transfer object for a user.
 type UserOutputDTO struct {
-	ID        string    `json:"id"`
-	FullName  string    `json:"full_name"`
-	Age       int       `json:"age"`
-	Email     string    `json:"email"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        string `json:"id"`
+	FullName  string `json:"full_name"`
+	Age       int    `json:"age"`
+	Email     string `json:"email"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }
