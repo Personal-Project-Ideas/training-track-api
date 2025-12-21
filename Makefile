@@ -1,3 +1,5 @@
+.PHONY: test test-unit test-bdd
+
 NOW := $(shell date '+%Y%m%d%H%M%S')
 
 # Configurable variables (can be set in environment or .env)
@@ -38,3 +40,16 @@ api-build-prod:
 # Run the production API container
 api-run-prod:
 	docker run --rm -p 8080:8080 prod-api
+
+# Run only unit tests
+test-unit:
+	go test ./test/unit/... -count=1 -v
+
+
+#Run only integration tests
+test-bdd:
+	go test ./test/bdd/... -count=1
+
+# Run all tests
+test:
+	go test ./test/... -count=1 -v
