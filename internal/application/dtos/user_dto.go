@@ -1,3 +1,4 @@
+// Package dtos contains all data transfer objects used in the application layer, this file contain user dtos
 package dtos
 
 // UserInputDTO represents the input data transfer object for creating or updating a user.

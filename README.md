@@ -31,27 +31,53 @@ This separation promotes maintainability, testability, and flexibility for futur
 ```plainText
 /trainlog
 │
-├── /api
-│   ├── /local              # Local environment entry point (main.go)
-│   └── /prod               # Production environment entry point (main.go)
+├── cmd/
+│   └── api/
+│       ├── local/
+│       │   └── main.go          # Local environment entrypoint
+│       └── prod/
+│           └── main.go          # Production environment entrypoint
 │
-├── /internal
-│   ├── /domain             # Core business entities and models
-│   ├── /usecases           # Application business logic
-│   ├── /ports              # Abstract interfaces
-│   └── /adapters           # Concrete implementations
-│       ├── /inbound       # Input adapters (HTTP handlers, routers)
-│       └── /outbound      # Output adapters (DB repositories, clients)
+├── internal/
+│   ├── domain/
+│   │   ├── models/              # Pure domain models (no ORM, no JSON tags)
+│   │   ├── services/            # Business rules and domain services
+│   │   ├── usecases/            # Application use cases (orchestration)
+│   │   └── ports/               # Domain ports (interfaces)
+│   │       ├── repositories/    # Persistence abstractions
+│   │       └── services/        # External service abstractions
 │
-├── /docker
-│   ├── /local
-│   └── /prod
+│   ├── application/
+│   │   ├── handlers/            # HTTP handlers (Fiber)
+│   │   ├── routes/              # Route definitions per domain
+│   │   ├── middlewares/         # HTTP middlewares
+│   │   └── dto/                 # Request/response DTOs
 │
-├── /migrations           # SQL migrations for DB schema versioning
-├── .env                  # Environment variables
+│   ├── infrastructure/
+│   │   ├── persistence/
+│   │   │   ├── entities/        # Database entities (ORM structs)
+│   │   │   └── repositories/    # Repository implementations
+│   │   ├── clients/             # External API clients
+│   │   ├── config/              # App configuration structs
+│   │   └── dependency/          # Dependency injection (manual or wire)
+│
+│   └── pkg/
+│       ├── database/            # Database singleton / connection factory
+│       ├── logger/              # Logger singleton
+│       ├── cache/               # Cache (Redis, memory, etc)
+│       └── env/                 # Environment loader
+│
+├── docker/
+│   ├── local/
+│   │   └── docker-compose.yaml
+│   └── prod/
+│       └── docker-compose.yaml
+│
+├── .env                         # Environment variables
+├── .env.example
 ├── go.mod
 ├── go.sum
-├── Makefile              # Build and run commands
+├── Makefile
 └── README.md
 ```
 

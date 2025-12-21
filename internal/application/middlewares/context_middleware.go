@@ -17,7 +17,7 @@ func (m *contextMiddleware) Handler(c *fiber.Ctx) error {
 		reqID = uuid.NewString()
 	}
 
-	ctx := context.WithValue(context.Background(), configuration.RequestIDKey, reqID)
+	ctx := context.WithValue(c.UserContext(), configuration.RequestIDKey, reqID)
 	c.SetUserContext(ctx)
 	c.Set("X-Request-ID", reqID)
 

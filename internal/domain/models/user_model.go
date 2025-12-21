@@ -3,6 +3,7 @@ package models
 
 import (
 	"github.com/google/uuid"
+	"time"
 )
 
 // User represents a user in the system.
@@ -11,7 +12,7 @@ type User struct {
 	FullName  string
 	Age       int
 	Email     string
-	Password  string
-	CreatedAt *string
-	UpdatedAt *string
+	Password  *string
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
 }

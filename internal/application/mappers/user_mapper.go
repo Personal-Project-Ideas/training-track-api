@@ -1,8 +1,10 @@
+// Package mappers contains functions to map between DTOs, entities and domain models.
 package mappers
 
 import (
 	"github.com/PratesJr/training-track-api/internal/application/dtos"
 	"github.com/PratesJr/training-track-api/internal/domain/models"
+	"github.com/PratesJr/training-track-api/internal/infra/entities"
 )
 
 // MapCreateInputToUser converts a UserInputDTO to a User model.
@@ -11,7 +13,7 @@ func MapCreateInputToUser(dto dtos.UserInputDTO) *models.User {
 		FullName: dto.FullName,
 		Age:      dto.Age,
 		Email:    dto.Email,
-		Password: dto.Password,
+		Password: &dto.Password,
 	}
 }
 
@@ -27,7 +29,7 @@ func MapUpdateInputToUser(dto dtos.UserUpdateInputDTO, user models.User) *models
 		user.Email = *dto.Email
 	}
 	if dto.Password != nil {
-		user.Password = *dto.Password
+		user.Password = dto.Password
 	}
 	return &user
 }
@@ -39,7 +41,30 @@ func MapUserToOutputDTO(user models.User) *dtos.UserOutputDTO {
 		FullName:  user.FullName,
 		Age:       user.Age,
 		Email:     user.Email,
-		CreatedAt: *user.CreatedAt,
-		UpdatedAt: *user.UpdatedAt,
+		CreatedAt: user.CreatedAt.String(),
+		UpdatedAt: user.UpdatedAt.String(),
+	}
+}
+
+// MapUserEntityToModel converts a UserEntity to a User model.
+func MapUserEntityToModel(entity entities.UserEntity) models.User {
+	return models.User{
+		ID:        &entity.ID,
+		FullName:  entity.FullName,
+		Age:       entity.Age,
+		Email:     entity.Email,
+		Password:  &entity.Password,
+		CreatedAt: &entity.CreatedAt,
+		UpdatedAt: &entity.UpdatedAt,
+	}
+}
+
+// MapUserModelToEntity converts a User model to a UserEntity.
+func MapUserModelToEntity(user models.User) entities.UserEntity {
+	return entities.UserEntity{
+		FullName: user.FullName,
+		Age:      user.Age,
+		Email:    user.Email,
+		Password: *user.Password,
 	}
 }
