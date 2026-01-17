@@ -1,13 +1,17 @@
 package exceptions
 
-import "context"
+import (
+	"context"
+
+	"github.com/PratesJr/training-track-api/internal/pkg/config"
+)
 
 func getRequestId(ctx context.Context) string {
 	if ctx == nil {
 		return ""
 	}
 
-	if id, ok := ctx.Value("request_id").(string); ok {
+	if id, ok := ctx.Value(config.RequestIDKey).(string); ok {
 		return id
 	}
 
