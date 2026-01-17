@@ -3,6 +3,7 @@ package middlewares
 
 import (
 	"context"
+
 	"github.com/PratesJr/training-track-api/internal/pkg/config"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -10,8 +11,7 @@ import (
 
 type contextMiddleware struct{}
 
-// Handler NewContextMiddleware creates a new instance of ContextMiddleware.
-func (m *contextMiddleware) Handler(c *fiber.Ctx) error {
+func (m *contextMiddleware) Handle(c *fiber.Ctx) error {
 	reqID := c.Get(string(config.RequestIDKey))
 	if reqID == "" {
 		reqID = uuid.NewString()
@@ -22,4 +22,9 @@ func (m *contextMiddleware) Handler(c *fiber.Ctx) error {
 	c.Set("X-Request-ID", reqID)
 
 	return c.Next()
+}
+
+// NewContextMiddleware  creates a new instance of ContextMiddleware.
+func NewContextMiddleware() Middleware {
+	return &contextMiddleware{}
 }

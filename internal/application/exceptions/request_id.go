@@ -1,3 +1,4 @@
+// Package exceptions provides all application exceptions
 package exceptions
 
 import (

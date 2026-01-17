@@ -10,6 +10,11 @@ import (
 
 func DbConnection() *gorm.DB {
 	properties := config.LoadConfig()
+
+	if properties == nil {
+		panic("Failed to load database config")
+	}
+
 	dns := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s",
 		*properties.DbURL,

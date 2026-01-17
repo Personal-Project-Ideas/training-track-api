@@ -2,6 +2,8 @@
 package bootstrap
 
 import (
+	"github.com/PratesJr/training-track-api/internal/application/middlewares"
+	"github.com/PratesJr/training-track-api/internal/application/routes"
 	application_composer "github.com/PratesJr/training-track-api/internal/bootstrap/composition/application"
 	domain_composer "github.com/PratesJr/training-track-api/internal/bootstrap/composition/domain"
 	infraestructure_composer "github.com/PratesJr/training-track-api/internal/bootstrap/composition/infraestructure"
@@ -16,6 +18,9 @@ type AppContainer struct {
 }
 
 func Bootstrap() *AppContainer {
+	var globalMiddlewares []middlewares.Middleware
+	var userMiddlewares []middlewares.Middleware
+
 	app := fiber.New()
 
 	infra := infraestructure_composer.Compose()
@@ -23,6 +28,15 @@ func Bootstrap() *AppContainer {
 	application := application_composer.Compose(infra.UserRepo)
 
 	domain := domain_composer.Compose()
+
+	globalMiddlewares = append(globalMiddlewares, middlewares.NewContextMiddleware())
+
+	routes.SetupRouter(
+		app,
+		application.UserHandler,
+		globalMiddlewares,
+		userMiddlewares,
+	)
 
 	return &AppContainer{
 		App:                 app,

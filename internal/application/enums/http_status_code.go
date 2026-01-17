@@ -1,3 +1,4 @@
+// Package enums provides all  enums
 package enums
 
 type httpStatus struct {
