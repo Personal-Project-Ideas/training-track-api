@@ -4,6 +4,7 @@ package usecases
 import (
 	"github.com/PratesJr/training-track-api/internal/domain/models"
 	"github.com/PratesJr/training-track-api/internal/domain/ports"
+	domain_services "github.com/PratesJr/training-track-api/internal/domain/services"
 )
 
 type createUserUseCase struct {
@@ -11,6 +12,11 @@ type createUserUseCase struct {
 }
 
 func (c createUserUseCase) Execute(input models.User) (*models.User, error) {
+	err := domain_services.ValidatePassword(*input.Password)
+
+	if err != nil {
+		return nil, err
+	}
 	//TODO implement me
 	panic("implement me")
 }

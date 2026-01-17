@@ -1,8 +1,10 @@
 package application_composer
 
 import (
+	"github.com/PratesJr/training-track-api/internal/application/handlers"
 	"github.com/PratesJr/training-track-api/internal/application/middlewares"
 	"github.com/PratesJr/training-track-api/internal/application/ports"
+	"github.com/PratesJr/training-track-api/internal/application/usecases"
 	ports2 "github.com/PratesJr/training-track-api/internal/domain/ports"
 )
 
@@ -12,8 +14,15 @@ type ApplicationContainer struct {
 	Middlewares []middlewares.Middleware
 }
 
-func Compose() *ApplicationContainer {
-	applicationContainer := &ApplicationContainer{}
+func Compose(
+	userRepository ports2.UserRepository,
+) *ApplicationContainer {
+	createUserUseCase := usecases.CreateUserUseCase(userRepository)
 
-	return applicationContainer
+	userHandler := handlers.UserHandler(createUserUseCase)
+
+	return &ApplicationContainer{
+		createUser:  createUserUseCase,
+		UserHandler: userHandler,
+	}
 }

@@ -20,7 +20,7 @@ func Bootstrap() *AppContainer {
 
 	infra := infraestructure_composer.Compose()
 
-	application := application_composer.Compose(infra)
+	application := application_composer.Compose(infra.UserRepo)
 
 	domain := domain_composer.Compose()
 
