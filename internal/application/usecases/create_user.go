@@ -2,6 +2,8 @@
 package usecases
 
 import (
+	"context"
+
 	"github.com/PratesJr/training-track-api/internal/domain/models"
 	"github.com/PratesJr/training-track-api/internal/domain/ports"
 	domain_services "github.com/PratesJr/training-track-api/internal/domain/services"
@@ -11,11 +13,11 @@ type createUserUseCase struct {
 	userRepository *ports.UserRepository
 }
 
-func (c createUserUseCase) Execute(input models.User) (*models.User, error) {
+func (c createUserUseCase) Execute(ctx context.Context, input models.User) (error, *models.User) {
 	err := domain_services.ValidatePassword(*input.Password)
 
 	if err != nil {
-		return nil, err
+		return err, nil
 	}
 	//TODO implement me
 	panic("implement me")

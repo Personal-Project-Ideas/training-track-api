@@ -4,6 +4,7 @@ package handlers
 import (
 	"github.com/PratesJr/training-track-api/internal/application/dtos"
 	"github.com/PratesJr/training-track-api/internal/application/exceptions"
+	"github.com/PratesJr/training-track-api/internal/application/mappers"
 	"github.com/PratesJr/training-track-api/internal/application/parsers"
 	"github.com/PratesJr/training-track-api/internal/application/ports"
 	"github.com/PratesJr/training-track-api/internal/application/validators"
@@ -12,7 +13,7 @@ import (
 )
 
 type userHandler struct {
-	createUser *ports2.CreateUserUseCase
+	createUser ports2.CreateUserUseCase
 }
 
 func (u userHandler) Create(c *fiber.Ctx) error {
@@ -33,7 +34,15 @@ func (u userHandler) Create(c *fiber.Ctx) error {
 
 		return c.Status(ex.StatusCode).JSON(ex)
 	}
+	data := mappers.MapCreateInputToUser(body)
 
+	executeErr, result := u.createUser.Execute(ctx, *data)
+
+	if executeErr != nil {
+		exception := parsers.ParseHttpError(nil, ctx, executeErr)
+
+		return c.Status(exception.StatusCode).JSON(exception)
+	}
 	return c.Status(501).SendString(
 		"Not Implemented.")
 }
@@ -43,8 +52,8 @@ func (u userHandler) GetByID(c *fiber.Ctx) error {
 }
 
 // UserHandler  creates a new instance of the user handler.
-func UserHandler(createUser ports2.CreateUserUseCase) ports.UserHandler {
+func UserHandler(createUser *ports2.CreateUserUseCase) ports.UserHandler {
 	return &userHandler{
-		createUser: &createUser,
+		createUser: *createUser,
 	}
 }

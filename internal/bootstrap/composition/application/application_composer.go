@@ -10,7 +10,7 @@ import (
 
 type ApplicationContainer struct {
 	UserHandler ports.UserHandler
-	createUser  ports2.CreateUserUseCase
+	createUser  *ports2.CreateUserUseCase
 	Middlewares []middlewares.Middleware
 }
 
@@ -19,10 +19,10 @@ func Compose(
 ) *ApplicationContainer {
 	createUserUseCase := usecases.CreateUserUseCase(userRepository)
 
-	userHandler := handlers.UserHandler(createUserUseCase)
+	userHandler := handlers.UserHandler(&createUserUseCase)
 
 	return &ApplicationContainer{
-		createUser:  createUserUseCase,
+		createUser:  &createUserUseCase,
 		UserHandler: userHandler,
 	}
 }
