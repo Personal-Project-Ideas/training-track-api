@@ -1,44 +1,55 @@
-# Load environment variables from .env
-include .env
-export
+.PHONY: test test-unit test-bdd
 
-# Define variables
-LIQUIBASE=liquibase
-CHANGELOG_FILE=migrations/changelog.yml
-MIGRATION_DIR=migrations
+NOW := $(shell date '+%Y%m%d%H%M%S')
 
-# Run API build
-build:
-	@echo "Building the Go API..."
-	go build -o bin/app ./...
+# Configurable variables (can be set in environment or .env)
+DATABASE_HOST ?= localhost
+DATABASE_PORT ?= 5432
+DATABASE_NAME ?= trainingLog
+DATABASE_USER ?= admin
+DATABASE_PASSWD ?= s9X@7vP2wQz!F4mL
 
-# Generate a new SQL migration
-# Usage: make generate name=your_migration_name
-generate:
-	@echo "Generating SQL migration: $(name)"
-	$(LIQUIBASE) \
-		--changeLogFile=$(CHANGELOG_FILE) \
-		generateChangeLog \
-		--outputFile=$(MIGRATION_DIR)/$(shell date +"%Y%m%d%H%M%S")_$(name).sql
+# ------------------------
+# API Build and Run Commands
+# ------------------------
 
-# Run migrations using Liquibase
-migrate:
-	@echo "Running Liquibase migrations..."
-	$(LIQUIBASE) \
-		--changeLogFile=$(CHANGELOG_FILE) \
-		update
+# Build the API image for local development
+api-build-local:
+	docker build -f docker/local/api/Dockerfile -t local-api ./api
 
-# Run docker-compose
-up:
-	docker-compose --env-file .env up -d
+# Run the API container locally with DB env vars
+api-run-local:
+	docker run --rm \
+		-e DATABASE_HOST=$(DATABASE_HOST) \
+		-e DATABASE_PORT=$(DATABASE_PORT) \
+		-e DATABASE_NAME=$(DATABASE_NAME) \
+		-e DATABASE_USER=$(DATABASE_USER) \
+		-e DATABASE_PASSWD=$(DATABASE_PASSWD) \
+		-p 8080:8080 \
+		--network trainlog-net \
+		local-api
 
-# Stop containers
-down:
-	docker-compose down
+# Run the API locally using Go (development mode)
+api-dev:
+	go run ./api/local
 
-# Recreate database and run all migrations
-reset:
-	docker-compose down -v
-	docker-compose --env-file .env up -d
-	sleep 5
-	make migrate
+# Build the production-ready API image
+api-build-prod:
+	docker build -f docker/Dockerfile -t prod-api .
+
+# Run the production API container
+api-run-prod:
+	docker run --rm -p 8080:8080 prod-api
+
+# Run only unit tests
+test-unit:
+	go test ./test/unit/... -count=1 -v
+
+
+#Run only integration tests
+test-bdd:
+	go test ./test/bdd/... -count=1
+
+# Run all tests
+test:
+	go test ./test/... -count=1 -v
