@@ -8,12 +8,14 @@ import (
 	"github.com/PratesJr/training-track-api/internal/application/parsers"
 	"github.com/PratesJr/training-track-api/internal/application/ports"
 	"github.com/PratesJr/training-track-api/internal/application/validators"
+	ports3 "github.com/PratesJr/training-track-api/internal/common/ports"
 	ports2 "github.com/PratesJr/training-track-api/internal/domain/ports"
 	"github.com/gofiber/fiber/v2"
 )
 
 type userHandler struct {
 	createUser ports2.CreateUserUseCase
+	logger     ports3.Logger
 }
 
 func (u userHandler) Create(c *fiber.Ctx) error {
@@ -52,8 +54,9 @@ func (u userHandler) GetByID(c *fiber.Ctx) error {
 }
 
 // UserHandler  creates a new instance of the user handler.
-func UserHandler(createUser *ports2.CreateUserUseCase) ports.UserHandler {
+func UserHandler(createUser *ports2.CreateUserUseCase, logger *ports3.Logger) ports.UserHandler {
 	return &userHandler{
 		createUser: *createUser,
+		logger:     *logger,
 	}
 }
