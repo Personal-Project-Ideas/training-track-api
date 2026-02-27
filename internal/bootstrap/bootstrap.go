@@ -5,6 +5,7 @@ import (
 	"github.com/PratesJr/training-track-api/internal/application/middlewares"
 	"github.com/PratesJr/training-track-api/internal/application/routes"
 	application_composer "github.com/PratesJr/training-track-api/internal/bootstrap/composition/application"
+	common_composer "github.com/PratesJr/training-track-api/internal/bootstrap/composition/common"
 	domain_composer "github.com/PratesJr/training-track-api/internal/bootstrap/composition/domain"
 	infraestructure_composer "github.com/PratesJr/training-track-api/internal/bootstrap/composition/infraestructure"
 	"github.com/gofiber/fiber/v2"
@@ -23,11 +24,13 @@ func Bootstrap() *AppContainer {
 
 	app := fiber.New()
 
-	infra := infraestructure_composer.Compose()
+	commons := common_composer.Compose()
 
-	application := application_composer.Compose(infra.UserRepo)
+	infra := infraestructure_composer.Compose(commons.Logger)
 
-	domain := domain_composer.Compose()
+	domain := domain_composer.Compose(commons.Logger)
+
+	application := application_composer.Compose(infra.UserRepo, &commons.Logger, domain.ValidatePass)
 
 	globalMiddlewares = append(globalMiddlewares, middlewares.NewContextMiddleware())
 

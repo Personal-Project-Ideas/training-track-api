@@ -31,7 +31,7 @@ api-run-local:
 
 # Run the API locally using Go (development mode)
 api-dev:
-	go run ./api/local
+	go run ./api/cmd/local
 
 # Build the production-ready API image
 api-build-prod:
