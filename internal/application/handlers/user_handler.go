@@ -20,8 +20,12 @@ type userHandler struct {
 
 func (u userHandler) Create(c *fiber.Ctx) error {
 	ctx := c.Context()
+
+	u.logger.Info(ctx, "user_handler.Create.call")
+
 	var body dtos.UserInputDTO
 	if err := c.BodyParser(&body); err != nil {
+		u.logger.Error(ctx, "user_handler.Create.error", err)
 		ex := exceptions.BadRequestException(
 			ctx,
 			"invalid request body",
@@ -31,6 +35,7 @@ func (u userHandler) Create(c *fiber.Ctx) error {
 	}
 
 	if err := validators.ValidateDTO(body, ctx); err != nil {
+		u.logger.Error(ctx, "user_handler.Create.error", err)
 
 		ex := parsers.ParseHttpError(err, ctx, nil)
 
@@ -38,13 +43,18 @@ func (u userHandler) Create(c *fiber.Ctx) error {
 	}
 	data := mappers.MapCreateInputToUser(body)
 
-	executeErr, result := u.createUser.Execute(ctx, *data)
+	executeErr, _ := u.createUser.Execute(ctx, *data)
 
 	if executeErr != nil {
+		u.logger.Error(ctx, "user_handler.Create.error", executeErr)
+
 		exception := parsers.ParseHttpError(nil, ctx, executeErr)
 
 		return c.Status(exception.StatusCode).JSON(exception)
 	}
+
+	u.logger.Info(ctx, "user_handler.Create.result")
+
 	return c.Status(501).SendString(
 		"Not Implemented.")
 }

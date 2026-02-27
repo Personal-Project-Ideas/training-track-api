@@ -26,7 +26,7 @@ func Bootstrap() *AppContainer {
 
 	commons := common_composer.Compose()
 
-	infra := infraestructure_composer.Compose()
+	infra := infraestructure_composer.Compose(commons.Logger)
 
 	domain := domain_composer.Compose(commons.Logger)
 

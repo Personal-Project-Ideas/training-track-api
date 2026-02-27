@@ -9,11 +9,11 @@ import (
 	ports2 "github.com/PratesJr/training-track-api/internal/domain/ports"
 )
 
-type ValidatePass struct {
+type validatePass struct {
 	logger ports.Logger
 }
 
-func (v ValidatePass) ValidatePassWord(ctx context.Context, password string) error {
+func (v validatePass) ValidatePassWord(ctx context.Context, password string) error {
 	v.logger.Info(ctx, "password_validator_service.ValidatePassWord.call")
 	if len(password) < 8 {
 		return domain_errors.ErrPasswordTooShort
@@ -51,6 +51,6 @@ func (v ValidatePass) ValidatePassWord(ctx context.Context, password string) err
 }
 
 func ValidatePassWordService(logger *ports.Logger) ports2.ValidatePwd {
-	return &ValidatePass{logger: *logger}
+	return &validatePass{logger: *logger}
 
 }
