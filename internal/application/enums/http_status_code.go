@@ -13,6 +13,7 @@ type httpStatus struct {
 	NotFound            int
 }
 
+// StatusCode is the global HTTP status code registry.
 var StatusCode = &httpStatus{
 	BadRequest:          400,
 	Unauthorized:        401,

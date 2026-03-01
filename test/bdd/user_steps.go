@@ -15,6 +15,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// User represents a test user for BDD scenarios.
 type User struct {
 	ID       uint   `gorm:"primaryKey"`
 	FullName string `gorm:"not null"`
@@ -31,6 +32,7 @@ var (
 	app            *fiber.App
 )
 
+// resetDB initializes the in-memory database and runs migrations.
 func resetDB() error {
 	var err error
 	db, err = gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
@@ -43,6 +45,7 @@ func resetDB() error {
 	return nil
 }
 
+// iHaveAValidUserPayload sets up a valid user payload for testing.
 func iHaveAValidUserPayload() error {
 	currentUser = User{
 		FullName: "Alice Smith",
@@ -53,6 +56,7 @@ func iHaveAValidUserPayload() error {
 	return nil
 }
 
+// iHaveAUserPayloadMissingTheEmail sets up a user payload missing the email field.
 func iHaveAUserPayloadMissingTheEmail() error {
 	currentUser = User{
 		FullName: "Bob",
@@ -63,6 +67,7 @@ func iHaveAUserPayloadMissingTheEmail() error {
 	return nil
 }
 
+// iHaveAUserPayloadWithAnEmailThatAlreadyExists sets up a user payload with a duplicate email.
 func iHaveAUserPayloadWithAnEmailThatAlreadyExists() error {
 	// First, create a user
 	user := User{
@@ -77,6 +82,7 @@ func iHaveAUserPayloadWithAnEmailThatAlreadyExists() error {
 	return nil
 }
 
+// iHaveAUserPayloadWith sets up a user payload with provided parameters.
 func iHaveAUserPayloadWith(fullName string, ageStr string, email string, password string) error {
 	age := 0
 	if strings.TrimSpace(ageStr) != "" {
@@ -104,6 +110,7 @@ func iHaveAUserPayloadWith(fullName string, ageStr string, email string, passwor
 	return nil
 }
 
+// iHaveAUserPayloadWithFullNameAgeEmailPassword sets up a user payload with explicit parameters.
 func iHaveAUserPayloadWithFullNameAgeEmailPassword(fullName string, age int, email, password string) error {
 	currentUser = User{
 		FullName: fullName,
@@ -114,6 +121,7 @@ func iHaveAUserPayloadWithFullNameAgeEmailPassword(fullName string, age int, ema
 	return nil
 }
 
+// iHaveAUserPayloadWithFullNameAgeEmailPasswordMissingAge sets up a user payload missing the age field.
 func iHaveAUserPayloadWithFullNameAgeEmailPasswordMissingAge(fullName, email, password string) error {
 	currentUser = User{
 		FullName: fullName,
@@ -124,6 +132,7 @@ func iHaveAUserPayloadWithFullNameAgeEmailPasswordMissingAge(fullName, email, pa
 	return nil
 }
 
+// iSendARequestToCreateTheUser sends a request to create the user using the current payload.
 func iSendARequestToCreateTheUser() error {
 	// Prepare JSON payload
 	payload := map[string]interface{}{
@@ -147,6 +156,7 @@ func iSendARequestToCreateTheUser() error {
 	return nil
 }
 
+// theResponseStatusShouldBe checks that the response status matches the expected value.
 func theResponseStatusShouldBe(expected int) error {
 	expectedStatus = expected
 	if responseStatus != expected {
@@ -155,6 +165,7 @@ func theResponseStatusShouldBe(expected int) error {
 	return nil
 }
 
+// aUserWithEmailAlreadyExists pre-inserts a user with the given email for duplicate tests.
 func aUserWithEmailAlreadyExists(email string) error {
 	preUser := User{
 		FullName: "PreExisting",
@@ -169,8 +180,9 @@ func aUserWithEmailAlreadyExists(email string) error {
 	return nil
 }
 
+// InitializeScenario sets up the scenario context and step definitions for Godog.
 func InitializeScenario(ctx *godog.ScenarioContext) {
-	ctx.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
+	ctx.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 		if err := resetDB(); err != nil {
 			return ctx, err
 		}

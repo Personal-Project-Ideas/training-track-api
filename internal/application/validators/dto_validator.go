@@ -1,3 +1,4 @@
+// Package validators provides DTO validation utilities for the application.
 package validators
 
 import (
@@ -8,6 +9,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// ValidateDTO validates a DTO and returns an error if validation fails.
 func ValidateDTO(ctx context.Context, dto interface{}) exceptions.ErrorType {
 	validate := validator.New()
 	err := validate.Struct(dto)

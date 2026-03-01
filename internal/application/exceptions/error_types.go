@@ -1,6 +1,7 @@
 // Package exceptions provides all application exceptions
 package exceptions
 
+// ErrorType defines the interface for application errors.
 type ErrorType interface {
 	Error() string
 	Description() string
@@ -18,11 +19,13 @@ type errorType struct {
 	message     string
 }
 
+// ErrorDetails represents details about a specific error attribute.
 type ErrorDetails struct {
 	Attribute string `json:"attribute"`
 	Messages  string `json:"messages"`
 }
 
+// NewErrorDetail creates a new ErrorDetails instance for a given attribute and message.
 func NewErrorDetail(attribute string, message string) ErrorDetails {
 
 	return ErrorDetails{
@@ -59,8 +62,9 @@ func (e *errorType) StatusCode() int {
 
 func (e *errorType) Details() []ErrorDetails { return e.details }
 
-type HttpException struct {
-	Id          string         `json:"id"`
+// HTTPException represents an HTTP error response.
+type HTTPException struct {
+	ID          string         `json:"id"`
 	Description string         `json:"description"`
 	Datetime    string         `json:"date_time"`
 	Details     []ErrorDetails `json:"details,omitempty"`

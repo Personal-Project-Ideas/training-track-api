@@ -1,3 +1,4 @@
+// Package logger provides logging implementations for the application.
 package logger
 
 import (
@@ -9,11 +10,13 @@ import (
 	"github.com/PratesJr/training-track-api/internal/pkg/config"
 )
 
+// SlogLogger is a structured logger implementation using slog.
 type SlogLogger struct {
 	log       *slog.Logger
 	sensitive map[string]struct{}
 }
 
+// New creates a new SlogLogger instance.
 func New(base *slog.Logger) ports.Logger {
 	return &SlogLogger{
 		log: base,
@@ -64,12 +67,14 @@ func (l *SlogLogger) enrich(ctx context.Context, attrs []any) []any {
 	return attrs
 }
 
+// Info logs an info message with optional attributes.
 func (l *SlogLogger) Info(ctx context.Context, msg string, attrs ...any) {
 	attrs = l.sanitize(attrs)
 	attrs = l.enrich(ctx, attrs)
 	l.log.InfoContext(ctx, msg, attrs...)
 }
 
+// Warn logs a warning message with optional attributes.
 func (l *SlogLogger) Warn(ctx context.Context, msg string, attrs ...any) {
 	attrs = l.sanitize(attrs)
 	attrs = l.enrich(ctx, attrs)

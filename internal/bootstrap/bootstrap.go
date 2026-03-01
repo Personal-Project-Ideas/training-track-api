@@ -12,6 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// AppContainer holds the application and its dependencies.
 type AppContainer struct {
 	App                 *fiber.App
 	InfraComposer       *infraestructure_composer.InfraContainer
@@ -19,6 +20,7 @@ type AppContainer struct {
 	DomainComposer      *domain_composer.DomainContainer
 }
 
+// Bootstrap initializes the application and returns its container.
 func Bootstrap(testDB ...*gorm.DB) *AppContainer {
 	var globalMiddlewares []middlewares.Middleware
 	var userMiddlewares []middlewares.Middleware

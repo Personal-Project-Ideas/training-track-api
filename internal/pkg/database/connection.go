@@ -1,3 +1,4 @@
+// Package database provides database connection utilities for the application.
 package database
 
 import (
@@ -8,6 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// DbConnection returns a new database connection using GORM.
 func DbConnection() *gorm.DB {
 	properties := config.LoadConfig()
 

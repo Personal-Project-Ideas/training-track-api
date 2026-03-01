@@ -1,3 +1,4 @@
+// Package handlers provides HTTP handlers for the API.
 package handlers
 
 import (
@@ -36,7 +37,7 @@ func (u userHandler) Create(c *fiber.Ctx) error {
 	if err := validators.ValidateDTO(ctx, body); err != nil {
 		u.logger.Error(ctx, "user_handler.Create.error", err)
 
-		ex := parsers.ParseHttpError(ctx, err, nil)
+		ex := parsers.ParseHTTPError(ctx, err, nil)
 		if ex.StatusCode == 0 {
 			return c.Status(422).JSON(ex)
 		}
@@ -50,7 +51,7 @@ func (u userHandler) Create(c *fiber.Ctx) error {
 	if executeErr != nil {
 		u.logger.Error(ctx, "user_handler.Create.error", executeErr)
 
-		exception := parsers.ParseHttpError(nil, ctx, executeErr)
+		exception := parsers.ParseHTTPError(ctx, executeErr, nil)
 
 		return c.Status(exception.StatusCode).JSON(exception)
 	}

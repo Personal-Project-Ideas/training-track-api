@@ -15,7 +15,7 @@ DATABASE_PASSWD ?= s9X@7vP2wQz!F4mL
 
 # Build the API image for local development
 api-build-local:
-	docker build -f docker/local/api/Dockerfile -t local-api ./api
+	docker build -f docker/local/Dockerfile -t local-api .
 
 # Run the API container locally with DB env vars
 api-run-local:

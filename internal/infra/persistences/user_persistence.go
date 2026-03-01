@@ -1,3 +1,4 @@
+// Package persistences provides persistence implementations for the application.
 package persistences
 
 import (
@@ -30,22 +31,22 @@ func (u *userPersistence) Create(ctx context.Context, user models.User) (models.
 	return mappers.MapUserEntityToModel(entity), nil
 }
 
-func (u *userPersistence) Update(ctx context.Context, user models.User) (models.User, error) {
+func (u *userPersistence) Update(_ context.Context, _ models.User) (models.User, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (u *userPersistence) FindByID(ctx context.Context, id string) (models.User, error) {
+func (u *userPersistence) FindByID(_ context.Context, _ string) (models.User, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (u *userPersistence) FindByEmail(ctx context.Context, email string) (models.User, error) {
+func (u *userPersistence) FindByEmail(_ context.Context, _ string) (models.User, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (u *userPersistence) List(ctx context.Context) ([]models.User, error) {
+func (u *userPersistence) List(_ context.Context) ([]models.User, error) {
 	//TODO implement me
 	panic("implement me")
 }

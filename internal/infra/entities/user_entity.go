@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// UserEntity represents a user entity for persistence.
 type UserEntity struct {
 	ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
 	FullName  string    `gorm:"type:varchar(255);not null"`

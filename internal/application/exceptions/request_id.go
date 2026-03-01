@@ -7,7 +7,8 @@ import (
 	"github.com/PratesJr/training-track-api/internal/pkg/config"
 )
 
-func getRequestId(ctx context.Context) string {
+// GetRequestID extracts the request ID from context.
+func GetRequestID(ctx context.Context) string {
 	if ctx == nil {
 		return ""
 	}

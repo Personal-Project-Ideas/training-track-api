@@ -4,6 +4,7 @@ package usecases
 import (
 	"context"
 
+	"github.com/PratesJr/training-track-api/internal/application/exceptions"
 	ports2 "github.com/PratesJr/training-track-api/internal/common/ports"
 	"github.com/PratesJr/training-track-api/internal/domain/models"
 	"github.com/PratesJr/training-track-api/internal/domain/ports"
@@ -15,7 +16,7 @@ type createUserUseCase struct {
 	validatePwd    ports.ValidatePwd
 }
 
-func (c createUserUseCase) Execute(ctx context.Context, input models.User) (error, *models.User) {
+func (c createUserUseCase) Execute(ctx context.Context, input models.User) (exceptions.ErrorType, *models.User) {
 	c.logger.Info(ctx, "create_user.Execute.call", input)
 
 	err := c.validatePwd.ValidatePassWord(ctx, *input.Password)

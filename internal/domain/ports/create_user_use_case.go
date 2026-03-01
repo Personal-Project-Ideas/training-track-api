@@ -4,9 +4,11 @@ package ports
 import (
 	"context"
 
+	"github.com/PratesJr/training-track-api/internal/application/exceptions"
 	"github.com/PratesJr/training-track-api/internal/domain/models"
 )
 
+// CreateUserUseCase defines the interface for the create user use case.
 type CreateUserUseCase interface {
-	Execute(ctx context.Context, input models.User) (error, *models.User)
+	Execute(ctx context.Context, input models.User) (exceptions.ErrorType, *models.User)
 }

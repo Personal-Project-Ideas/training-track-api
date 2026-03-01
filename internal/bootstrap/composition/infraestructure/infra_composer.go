@@ -1,4 +1,5 @@
-package infraestructure_composer
+// Package infraestructurecomposer provides composition for infrastructure layer dependencies.
+package infraestructurecomposer
 
 import (
 	ports "github.com/PratesJr/training-track-api/internal/common/ports"
@@ -8,10 +9,12 @@ import (
 	"gorm.io/gorm"
 )
 
+// InfraContainer holds infrastructure layer dependencies.
 type InfraContainer struct {
 	UserRepo ports2.UserRepository
 }
 
+// Compose initializes and returns the InfraContainer.
 func Compose(logger ports.Logger, testDB ...*gorm.DB) *InfraContainer {
 	var db *gorm.DB
 	if len(testDB) > 0 && testDB[0] != nil {

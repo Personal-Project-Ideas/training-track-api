@@ -1,4 +1,5 @@
-package application_composer
+// Package applicationcomposer provides composition for application layer dependencies.
+package applicationcomposer
 
 import (
 	"github.com/PratesJr/training-track-api/internal/application/handlers"
@@ -9,12 +10,14 @@ import (
 	ports2 "github.com/PratesJr/training-track-api/internal/domain/ports"
 )
 
+// ApplicationContainer holds application layer dependencies.
 type ApplicationContainer struct {
 	UserHandler ports.UserHandler
 	createUser  *ports2.CreateUserUseCase
 	Middlewares []middlewares.Middleware
 }
 
+// Compose initializes and returns the ApplicationContainer.
 func Compose(
 	userRepository ports2.UserRepository,
 	logger *ports3.Logger,

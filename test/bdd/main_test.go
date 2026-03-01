@@ -1,3 +1,4 @@
+// Package bdd contains BDD test scenarios for the application.
 package bdd
 
 import (

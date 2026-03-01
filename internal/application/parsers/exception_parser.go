@@ -1,3 +1,4 @@
+// Package parsers provides error parsing utilities for the application.
 package parsers
 
 import (
@@ -9,22 +10,20 @@ import (
 	"github.com/PratesJr/training-track-api/internal/pkg/config"
 )
 
-// ParseHttpError parses an error and returns an HttpException.
-func ParseHttpError(
+// ParseHTTPError parses an error and returns an HTTPException.
+func ParseHTTPError(
 	ctx context.Context,
 	customErr exceptions2.ErrorType,
 	err error,
-) exceptions2.HttpException {
-
-	var response exceptions2.HttpException
-
+) exceptions2.HTTPException {
+	var response exceptions2.HTTPException
 	response.Datetime = time.Now().Format(time.RFC3339)
 
 	if reqID, ok := ctx.Value(config.RequestIDKey).(string); ok {
-		response.Id = reqID
+		response.ID = reqID
 	} else if customErr != nil {
 		if idGetter, ok := any(customErr).(interface{ Id() string }); ok {
-			response.Id = idGetter.Id()
+			response.ID = idGetter.Id()
 		}
 	}
 
