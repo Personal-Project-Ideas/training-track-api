@@ -9,6 +9,7 @@ import (
 	domain_composer "github.com/PratesJr/training-track-api/internal/bootstrap/composition/domain"
 	infraestructure_composer "github.com/PratesJr/training-track-api/internal/bootstrap/composition/infraestructure"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 type AppContainer struct {
@@ -18,7 +19,7 @@ type AppContainer struct {
 	DomainComposer      *domain_composer.DomainContainer
 }
 
-func Bootstrap() *AppContainer {
+func Bootstrap(testDB ...*gorm.DB) *AppContainer {
 	var globalMiddlewares []middlewares.Middleware
 	var userMiddlewares []middlewares.Middleware
 
@@ -26,7 +27,7 @@ func Bootstrap() *AppContainer {
 
 	commons := common_composer.Compose()
 
-	infra := infraestructure_composer.Compose(commons.Logger)
+	infra := infraestructure_composer.Compose(commons.Logger, testDB...)
 
 	domain := domain_composer.Compose(commons.Logger)
 

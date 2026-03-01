@@ -12,17 +12,16 @@ type InfraContainer struct {
 	UserRepo ports2.UserRepository
 }
 
-func Compose(logger ports.Logger) *InfraContainer {
-
+func Compose(logger ports.Logger, testDB ...*gorm.DB) *InfraContainer {
 	var db *gorm.DB
-	var userRepo ports2.UserRepository
-
-	db = database.DbConnection()
-	userRepo = persistences.UserPersistence(db, logger)
-
+	if len(testDB) > 0 && testDB[0] != nil {
+		db = testDB[0]
+	} else {
+		db = database.DbConnection()
+	}
+	userRepo := persistences.UserPersistence(db, logger)
 	infraContainer := &InfraContainer{
 		UserRepo: userRepo,
 	}
-
 	return infraContainer
 }

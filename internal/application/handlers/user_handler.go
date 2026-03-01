@@ -1,4 +1,3 @@
-// Package handlers  provides the implementation of the user handler interface.
 package handlers
 
 import (
@@ -34,16 +33,19 @@ func (u userHandler) Create(c *fiber.Ctx) error {
 		return c.Status(ex.StatusCode()).JSON(ex.ToMap())
 	}
 
-	if err := validators.ValidateDTO(body, ctx); err != nil {
+	if err := validators.ValidateDTO(ctx, body); err != nil {
 		u.logger.Error(ctx, "user_handler.Create.error", err)
 
-		ex := parsers.ParseHttpError(err, ctx, nil)
-
+		ex := parsers.ParseHttpError(ctx, err, nil)
+		if ex.StatusCode == 0 {
+			return c.Status(422).JSON(ex)
+		}
 		return c.Status(ex.StatusCode).JSON(ex)
 	}
+
 	data := mappers.MapCreateInputToUser(body)
 
-	executeErr, _ := u.createUser.Execute(ctx, *data)
+	executeErr, response := u.createUser.Execute(ctx, *data)
 
 	if executeErr != nil {
 		u.logger.Error(ctx, "user_handler.Create.error", executeErr)
@@ -55,15 +57,14 @@ func (u userHandler) Create(c *fiber.Ctx) error {
 
 	u.logger.Info(ctx, "user_handler.Create.result")
 
-	return c.Status(501).SendString(
-		"Not Implemented.")
+	return c.Status(201).JSON(response)
 }
 
 func (u userHandler) GetByID(c *fiber.Ctx) error {
 	return c.Status(501).SendString("Not Implemented.")
 }
 
-// UserHandler  creates a new instance of the user handler.
+// UserHandler creates a new instance of the user handler.
 func UserHandler(createUser *ports2.CreateUserUseCase, logger *ports3.Logger) ports.UserHandler {
 	return &userHandler{
 		createUser: *createUser,

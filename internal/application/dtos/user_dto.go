@@ -4,7 +4,7 @@ package dtos
 // UserInputDTO represents the input data transfer object for creating or updating a user.
 type UserInputDTO struct {
 	FullName string `json:"full_name" validate:"required,min=2,max=255"`
-	Age      int    `json:"age" validate:"gte=0,lte=150"`
+	Age      int    `json:"age" validate:"required,gte=0,lte=150"`
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required,min=8"`
 }

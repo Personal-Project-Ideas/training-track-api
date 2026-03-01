@@ -8,7 +8,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func ValidateDTO(dto interface{}, ctx context.Context) exceptions.ErrorType {
+func ValidateDTO(ctx context.Context, dto interface{}) exceptions.ErrorType {
 	validate := validator.New()
 	err := validate.Struct(dto)
 
